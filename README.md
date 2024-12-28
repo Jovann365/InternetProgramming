@@ -1,5 +1,8 @@
 # Internet Programming on the Clients Side :books:
 
+In this repository I am uploading all of the exercises I have done in JavaScript for   
+the subject **Internet Programming** :email:
+
 ## Material :file_folder:
 
 - JavaScript
