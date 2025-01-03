@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ColorsDelimiter</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        div {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .card {
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h3>Colors</h3>
+    <div>
+        <input type="text" id="colors">
+    </div>
+    <h3>Delimiter</h3>
+    <div>
+        <input type="text" id="delimiter">
+    </div>
+    <button onclick="draw()">Draw</button>
+
+    <div id="container">
+
+    </div>
+
+<script>
+    var counter = 0;
+
+    function draw() {
+        var colors = document.getElementById("colors");
+        colors = colors.value;
+        var delimiter = document.getElementById("delimiter");
+        delimiter = delimiter.value;
+
+        if (colors === null || delimiter === null) {
+            alert("Enter all fields!");
+            return;
+        }
+
+        let colorsSplit = colors.split(delimiter);
+
+        for (let i = 0; i < colorsSplit.length; i++) {
+            let card = "<div id='"+counter+"' class='card' style='background: "+colorsSplit[i]+"' onclick='removeCard(this)'></div>"
+            document.getElementById("container").innerHTML += card;
+            counter++;
+        }
+    }
+
+    function removeCard(object) {
+        let card = object;
+        let color = card.style.backgroundColor;
+        let id = card.id;
+        console.log(id);
+        card.remove();
+        let text = document.getElementById("colors");
+        text = text.value;
+        let textSplit = text.split(document.getElementById("delimiter").value);
+        let newTextSplit = [];
+        for (let i = 0; i < textSplit.length; i++) {
+            if (i !== parseInt(id)) {
+                newTextSplit.push(textSplit[i]);
+            }
+        }
+        console.log(newTextSplit);
+        let newText = newTextSplit.join(document.getElementById("delimiter").value);
+        console.log(newText);
+        let colors = document.getElementById("colors");
+        colors.value = newText;
+    }
+</script>
+</body>
+</html>
