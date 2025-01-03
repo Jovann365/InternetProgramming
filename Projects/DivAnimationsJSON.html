@@ -46,16 +46,13 @@
     let currcard = document.getElementsByClassName("card")[0];
     currcard.remove();
 
-    let newCrad = "<div class='card' style='background: "+cards[parseInt(currentCard)].backgroundColor+"; width: "+cards[parseInt(currentCard)].width+"; height: "+cards[parseInt(currentCard)].height+"'></div>"
+    let newCrad = "<div class='card' style='background: "+cards[parseInt(currentCard)].backgroundColor+"; width: "+cards[parseInt(currentCard)].width+"; height: "+cards[parseInt(currentCard)].height+"; left: "+getComputedStyle(document.body).marginLeft+"px'></div>"
     container.innerHTML += newCrad;
 
-    currcard = document.getElementsByClassName("card")[0];
-    currcard.style.left = parseInt(container.clientWidth) - parseInt(currcard.clientWidth) + "px";
-
     anime({
-      easeing: 'linear',
+      easing: 'linear',
       targets: '.card',
-      translateX: -(parseInt(container.clientWidth) - parseInt(currcard.clientWidth) - document.body.style.marginLeft),
+      left: getComputedStyle(document.body).marginLeft,
       duration: 1000
     })
   }
