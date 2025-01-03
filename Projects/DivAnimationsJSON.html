@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Div Animation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>  <style>
+    #buttons {
+      margin-bottom: 10px;
+    }
+    #container {
+      width: 1000px;
+      height: 500px;
+      background: lightgray;
+    }
+    .card {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <div id="buttons">
+  <button onclick="moveLeft()"><</button>
+  <button onclick="moveRight()">></button>
+  </div>
+
+  <div id="container">
+
+  </div>
+
+<script>
+  var cards = [];
+  var container = document.getElementById("container");
+  let data = '[{"backgroundColor":"red", "width":"100px", "height":"100px"}, {"backgroundColor":"green", "width":"50px", "height":"100px"}, {"backgroundColor":"blue", "width":"100px", "height":"50px"}]';
+  cards = JSON.parse(data);
+  let firstDiv = "<div class='card' style='background: "+cards[0].backgroundColor+"; width: "+cards[0].width+"; height: "+cards[0].height+"'></div>"
+  container.innerHTML += firstDiv;
+  var currentCard = 0;
+
+  function moveLeft() {
+    if (parseInt(currentCard) === 0)
+      currentCard = parseInt(cards.length) - 1;
+    else
+      currentCard--;
+
+    console.log(currentCard)
+    let currcard = document.getElementsByClassName("card")[0];
+    currcard.remove();
+
+    let newCrad = "<div class='card' style='background: "+cards[parseInt(currentCard)].backgroundColor+"; width: "+cards[parseInt(currentCard)].width+"; height: "+cards[parseInt(currentCard)].height+"'></div>"
+    container.innerHTML += newCrad;
+
+    currcard = document.getElementsByClassName("card")[0];
+    currcard.style.left = parseInt(container.clientWidth) - parseInt(currcard.clientWidth) + "px";
+
+    anime({
+      easeing: 'linear',
+      targets: '.card',
+      translateX: -(parseInt(container.clientWidth) - parseInt(currcard.clientWidth) - document.body.style.marginLeft),
+      duration: 1000
+    })
+  }
+
+  function moveRight() {
+    if (parseInt(currentCard) === parseInt(cards.length) - 1)
+      currentCard = 0;
+    else
+      currentCard++;
+
+    let currcard = document.getElementsByClassName("card")[0];
+
+    anime({
+      easing: 'linear',
+      targets: '.card',
+      translateX: (container.clientWidth - currcard.clientWidth),
+      duration: 1000,
+    })
+
+    setTimeout(() => {
+      currcard.remove();
+      let newCrad = "<div class='card' style='background: "+cards[parseInt(currentCard)].backgroundColor+"; width: "+cards[parseInt(currentCard)].width+"; height: "+cards[parseInt(currentCard)].height+"'></div>"
+      container.innerHTML += newCrad;
+    }, 1100)
+
+
+  }
+</script>
+</body>
+</html>
