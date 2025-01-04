@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Div Animation</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>  <style>
+    body {
+        margin: 0;
+    }
     #buttons {
       margin-bottom: 10px;
     }
@@ -11,6 +14,7 @@
       width: 1000px;
       height: 500px;
       background: lightgray;
+        margin-left: 10px;
     }
     .card {
       position: absolute;
@@ -32,8 +36,13 @@
   var container = document.getElementById("container");
   let data = '[{"backgroundColor":"red", "width":"100px", "height":"100px"}, {"backgroundColor":"green", "width":"50px", "height":"100px"}, {"backgroundColor":"blue", "width":"100px", "height":"50px"}]';
   cards = JSON.parse(data);
-  let firstDiv = "<div class='card' style='background: "+cards[0].backgroundColor+"; width: "+cards[0].width+"; height: "+cards[0].height+"'></div>"
-  container.innerHTML += firstDiv;
+  let firtsCard = document.createElement('div');
+  firtsCard.className = 'card';
+  firtsCard.style.background = cards[0].backgroundColor;
+  firtsCard.style.width = cards[0].width;
+  firtsCard.style.height = cards[0].height;
+  firtsCard.left = '10px';
+  container.appendChild(firtsCard);
   var currentCard = 0;
 
   function moveLeft() {
@@ -46,15 +55,29 @@
     let currcard = document.getElementsByClassName("card")[0];
     currcard.remove();
 
-    let newCrad = "<div class='card' style='background: "+cards[parseInt(currentCard)].backgroundColor+"; width: "+cards[parseInt(currentCard)].width+"; height: "+cards[parseInt(currentCard)].height+"; left: "+getComputedStyle(document.body).marginLeft+"px'></div>"
-    container.innerHTML += newCrad;
+      let shift = parseInt(container.clientWidth - parseInt(cards[currentCard].width.slice(0,cards[currentCard].width.length -2))) + 'px';
 
+    let newCard = document.createElement('div');
+    newCard.className += 'card';
+    newCard.style.background = cards[currentCard].backgroundColor;
+    newCard.style.width = cards[currentCard].width;
+    newCard.style.height = cards[currentCard].height;
+    newCard.style.left = shift;
+
+    console.log(container.clientWidth);
+    console.log(cards[currentCard].width.slice(0,cards[currentCard].width.length -2));
+    console.log(newCard.left);
+    container.appendChild(newCard);
     anime({
       easing: 'linear',
       targets: '.card',
-      left: getComputedStyle(document.body).marginLeft,
-      duration: 1000
+      left: '10px',
+      duration: 1000,
     })
+
+      setTimeout(() => {
+          newCard.style.left = 10 + 'px';
+      }, 1100)
   }
 
   function moveRight() {
@@ -68,17 +91,20 @@
     anime({
       easing: 'linear',
       targets: '.card',
-      translateX: (container.clientWidth - currcard.clientWidth),
+      translateX: container.clientWidth - currcard.clientWidth,
       duration: 1000,
     })
 
     setTimeout(() => {
       currcard.remove();
-      let newCrad = "<div class='card' style='background: "+cards[parseInt(currentCard)].backgroundColor+"; width: "+cards[parseInt(currentCard)].width+"; height: "+cards[parseInt(currentCard)].height+"'></div>"
-      container.innerHTML += newCrad;
+        let newCard = document.createElement('div');
+        newCard.className += 'card';
+        newCard.style.background = cards[currentCard].backgroundColor;
+        newCard.style.width = cards[currentCard].width;
+        newCard.style.height = cards[currentCard].height;
+        newCard.left = '10px';
+        container.appendChild(newCard);
     }, 1100)
-
-
   }
 </script>
 </body>
