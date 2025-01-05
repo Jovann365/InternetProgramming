@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SnowFlakeAnimation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <style>
+        img {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    var container = document.body;
+
+    var s1 = document.createElement('img');
+    s1.setAttribute('src', 'SnowFlake1.png');
+    var s2 = document.createElement('img');
+    s2.setAttribute('src', 'SnowFlake2.png');
+    var s3 = document.createElement('img');
+    s3.setAttribute('src', 'SnowFlake3.png');
+    var s4 = document.createElement('img');
+    s4.setAttribute('src', 'SnowFlake4.png');
+    var s5 = document.createElement('img');
+    s5.setAttribute('src', 'SnowFlake5.png');
+    var s6 = document.createElement('img');
+    s6.setAttribute('src', 'SnowFlake6.png');
+
+    var snowflakes = [];
+    snowflakes.push(s1, s2, s3, s4, s5, s6);
+
+    var counter = 0;
+
+    setInterval(() => {
+        if (counter === snowflakes.length) counter = 0;
+        var newSnowflake = document.createElement('img');
+        newSnowflake.src = snowflakes[counter].src;
+        console.log(newSnowflake);
+        newSnowflake.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+        newSnowflake.style.top = '0px';
+        container.appendChild(newSnowflake);
+        anime({
+            easing: 'linear',
+            targets: newSnowflake,
+            duration: 5000,
+            translateY: [0, window.innerHeight-150],
+            complete: function () {
+                newSnowflake.remove()
+            }
+        })
+        counter++;
+    }, 1000)
+
+</script>
+</body>
+</html>
