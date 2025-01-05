@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SquareAnimations</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <style>
+        .square {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    var colors = ['red', 'blue', 'yellow', 'green', 'orange'];
+    var container = document.body;
+
+    for (let i = 0; i < 5; i++) {
+        let newSquare = document.createElement('div');
+        newSquare.style.backgroundColor = colors[i];
+        newSquare.className = 'square';
+        newSquare.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+        newSquare.style.top = Math.random() * (window.innerHeight - 150) + 'px';
+        newSquare.setAttribute('onclick', 'divide(this)');
+        container.appendChild(newSquare);
+    }
+
+    function divide(object) {
+        let firstSquare = object;
+        let posX = firstSquare.style.left.slice(0,firstSquare.style.left.length - 2);
+        let posY = firstSquare.style.top.slice(0,firstSquare.style.top.length - 2);
+        let positionsX = [parseInt(posX) -50, parseInt(posX) - 50, parseInt(posX) + 50, parseInt(posX) + 50];
+        let positionsY = [parseInt(posY) +50, parseInt(posY) - 50, parseInt(posY) + 50, parseInt(posY) - 50];
+        for (let i = 0; i < 4; i++) {
+            let square = document.createElement('div');
+            square.className = 'square';
+            square.style.backgroundColor = firstSquare.style.backgroundColor;
+            square.style.left = firstSquare.style.left;
+            square.style.top = firstSquare.style.top;
+            square.setAttribute('onclick', 'divide(this)');
+            container.appendChild(square);
+            anime({
+                easing: 'linear',
+                targets: square,
+                left: positionsX[i],
+                top: positionsY[i],
+                duration: 700
+            })
+            firstSquare.remove();
+        }
+    }
+</script>
+
+</body>
+</html>
