@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RandomColors</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <style>
+        textarea {
+            width: 250px;
+            height: 200px;
+        }
+        p {
+            display: inline-block;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div id="inputPage">
+    <label>
+        <textarea id="text"></textarea>
+    </label>
+    <br>
+    <button onclick="displayWords()">Прикажи</button>
+</div>
+
+<script>
+    /*
+    Test Case:
+        црвена црвена црвена црвена
+        жолта жолта жолта
+        сина сина сина сина
+        бела бела
+        црна
+     */
+
+    function displayWords() {
+        var container = document.body;
+        var text = document.getElementById("text");
+        text = text.value;
+        document.getElementById("inputPage").hidden = true;
+
+        var lines = text.split('\n');
+        var word = [];
+        var counters = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            let words = lines[i];
+            words = words.split(" ");
+            word[i] = words[0];
+            counters[i] = words.length;
+        }
+        console.log(word)
+        console.log(counters)
+
+        for (let i = 0; i < word.length; i++) {
+            let w = document.createElement('p');
+            w.innerText = word[i];
+            w.style.left = Math.random() * (window.innerWidth-150) + 'px';
+            w.style.top = Math.random() * (window.innerHeight-150) + 'px';
+            w.style.color = `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255} )`;
+            w.style.fontSize = (30 + parseInt(counters[i]) * 10) + 'px';
+            w.style.opacity = 0;
+            w.className = 'card';
+            container.appendChild(w);
+        }
+        anime({
+            targets: '.card',
+            opacity: [0,1],
+            easing: 'linear',
+            duration: 1000,
+            delay: anime.stagger(650)
+        })
+    }
+</script>
+</body>
+</html>
