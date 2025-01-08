@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wordle</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <style>
+        .box {
+            border: black solid 3px;
+            height: 120px;
+            width: 120px;
+            font-size: 120px;
+            text-align: center;
+            margin: 3px;
+        }
+        .disabledBox {
+        }
+        .enabledBox {
+
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+
+    </div>
+
+    <script>
+        var words = '["moliv", "tabla", "miris"]'
+        words = JSON.parse(words);
+        var word = words[parseInt(Math.random() * 3 - 1)];
+        var container = document.getElementById("container");
+
+        addInputs();
+
+        function addInputs() {
+            let newDiv = document.createElement('div');
+            for (let i = 0; i < 5; i++) {
+                let newInput = document.createElement('input');
+                newInput.className = 'box enabledBox';
+                newInput.addEventListener('keydown', function (event) {
+                    if (event.key === "Enter") {
+                        checkWord();
+                    }
+                })
+                newDiv.appendChild(newInput);
+            }
+
+            container.appendChild(newDiv);
+        }
+
+        function checkWord () {
+            let letters = [];
+            let inputs = document.getElementsByClassName('enabledBox');
+            let correctLetters = 0;
+            for (let i = 0; i <inputs.length; i++) {
+                letters[i] = inputs[i].value;
+                if (letters[i].length !== 1) {
+                    alert("Enter only 1 letter in every box");
+                    return;
+                }
+                letters[i] = letters[i].charAt(0).toLowerCase();
+            }
+            console.log(letters)
+            console.log(inputs)
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].setAttribute("disabled", "disabled");
+            }
+
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    if (letters[i] === word[j]){
+                        if (i === j) {
+                            inputs[i].style.backgroundColor = "green";
+                            correctLetters++;
+                            anime ({
+                                easing: 'linear',
+                                opacity: [0, 1],
+                                targets: inputs[i],
+                                duration: 300
+                            })
+                            break;
+                        }
+                        else {
+                            inputs[i].style.backgroundColor = "yellow"
+                            anime ({
+                                easing: 'linear',
+                                opacity: [0,1],
+                                targets: inputs[i],
+                                duration: 800
+                            })
+                        }
+                    }
+                }
+            }
+            for (let i = 0; i <inputs.length; i++) {
+                inputs[i].className = "box disabledBox"
+                i--;
+            }
+            if (correctLetters === 5) {
+                document.body.style.backgroundColor = "green";
+                return;
+            } else {
+                addInputs();
+            }
+        }
+
+
+    </script>
+</body>
+</html>
