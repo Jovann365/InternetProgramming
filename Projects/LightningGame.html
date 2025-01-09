@@ -127,8 +127,8 @@
         let end = start + parseInt(cards[i].style.width.split("px")[0]);
         if (position >= start && position <= end) {
           score += parseInt(cards[i].getAttribute("score"));
-          cards[i].remove();
-          i--;
+          cards[i].style.display = "none";
+          cards[i].setAttribute("score", 0);
         }
       }
       document.getElementById("score").innerText = score;
