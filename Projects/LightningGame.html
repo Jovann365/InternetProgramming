@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LightningGame</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    #container {
+      width: 800px;
+      height: 600px;
+      border: 1px solid black;
+    }
+    p {
+      font-size: 30px;
+      font-weight: bold;
+    }
+    .card {
+      position: absolute;
+      border: 2px solid black;
+    }
+    .bolt {
+      width: 3px;
+      height: 600px;
+      position: absolute;
+      top: 8px;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+
+  </div>
+  <p>Score: <span id="score">0</span></p>
+</body>
+
+  <script>
+    var score = 0;
+    var bolts = 0;
+    var animations = 0;
+    var numCards = 0;
+    var container = document.getElementById("container");
+    fetch("https://webhook.site/27c684fe-0173-4157-868a-efc1dfbff755")
+            .then(response => response.json())
+            .then(function (data) {
+              for (let i = 0; i < data.length; i++) {
+                let newCard = document.createElement("div");
+                newCard.className = "card";
+                newCard.id = numCards;
+                numCards++;
+                newCard.style.width = data[i].width;
+                newCard.style.height = data[i].height;
+                newCard.style.top = data[i].top;
+                newCard.style.left = data[i].left;
+                newCard.style.backgroundColor = data[i].color;
+                newCard.setAttribute("direction", data[i].direction);
+                newCard.setAttribute("axis", i%2)
+                newCard.setAttribute("score", data[i].score);
+                container.appendChild(newCard);
+              }
+              animateCards();
+            })
+
+
+    function animateCards() {
+      let cards = document.getElementsByClassName("card");
+      for (let i = 0; i < cards.length; i++) {
+        if (cards[i].getAttribute("direction") === "horizontal") {
+          let left = parseInt(cards[i].style.left.split("px")[0]);
+          if (cards[i].getAttribute("axis") === "0") {
+            left = left + 5;
+          }
+          else if (cards[i].getAttribute("axis") === "1") {
+            left = left - 5;
+          }
+          if (left <= 0) {
+            console.log(cards[i]);
+            cards[i].setAttribute("axis", 0);
+          }
+          if (left + parseInt(cards[i].style.width.split("px")[0]) >= 800) {
+            console.log(cards[i]);
+            cards[i].setAttribute("axis", 1);
+          }
+          cards[i].style.left = left + "px";
+        }
+        if (cards[i].getAttribute("direction") === "vertical") {
+          let top = parseInt(cards[i].style.top.split("px")[0]);
+          if (cards[i].getAttribute("axis") === "0") {
+            top = top + 5;
+          } else if (cards[i].getAttribute("axis") === "1"){
+            top = top - 5;
+          }
+
+          if (top <= 0) {
+            console.log(cards[i]);
+            cards[i].setAttribute("axis", 0)
+          }
+          if (top + parseInt(cards[i].style.height.split("px")[0]) >= 600) {
+            console.log(cards[i]);
+            cards[i].setAttribute("axis", 1);
+          }
+          cards[i].style.top = top + "px";
+        }
+      }
+      animations++;
+
+      if (animations < 50) {
+        setTimeout(animateCards, 50);
+      } else {
+        animations = 0;
+        bolts++;
+        addLightningBolt();
+      }
+    }
+
+    function addLightningBolt () {
+      let position = Math.random() * 800;
+      let newBolt = document.createElement("div");
+      newBolt.className = "bolt";
+      newBolt.style.left = position + 'px';
+      container.appendChild(newBolt);
+      let cards = document.getElementsByClassName("card");
+      for (let i = 0; i < cards.length; i++) {
+        let start = parseInt(cards[i].style.left.split("px")[0]);
+        let end = start + parseInt(cards[i].style.width.split("px")[0]);
+        if (position >= start && position <= end) {
+          score += parseInt(cards[i].getAttribute("score"));
+          cards[i].remove();
+        }
+      }
+      document.getElementById("score").innerText = score;
+      if (bolts <= 3) {
+        setTimeout(() => {
+          newBolt.remove();
+          animateCards();
+        }, 1000)
+      }
+    }
+  </script>
+<!--[-->
+<!--{-->
+<!--"width": "150px",-->
+<!--"height": "100px",-->
+<!--"left": "230px",-->
+<!--"top": "15px",-->
+<!--"color": "red",-->
+<!--"score": 27,-->
+<!--"direction": "vertical"-->
+<!--},-->
+<!--{-->
+<!--"width": "140px",-->
+<!--"height": "50px",-->
+<!--"left": "300px",-->
+<!--"top": "460px",-->
+<!--"color": "orange",-->
+<!--"score": 91,-->
+<!--"direction": "vertical"-->
+<!--},-->
+<!--{-->
+<!--"width": "45px",-->
+<!--"height": "65px",-->
+<!--"left": "80px",-->
+<!--"top": "120px",-->
+<!--"color": "yellow",-->
+<!--"score": 33,-->
+<!--"direction": "horizontal"-->
+<!--},-->
+<!--{-->
+<!--"width": "65px",-->
+<!--"height": "65px",-->
+<!--"left": "520px",-->
+<!--"top": "210px",-->
+<!--"color": "green",-->
+<!--"score": 13,-->
+<!--"direction": "horizontal"-->
+<!--},-->
+<!--{-->
+<!--"width": "30px",-->
+<!--"height": "100px",-->
+<!--"left": "620px",-->
+<!--"top": "300px",-->
+<!--"color": "blue",-->
+<!--"score": 58,-->
+<!--"direction": "vertical"-->
+<!--}-->
+<!--]-->
+</html>
+
