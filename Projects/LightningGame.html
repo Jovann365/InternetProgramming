@@ -132,7 +132,7 @@
         }
       }
       document.getElementById("score").innerText = score;
-      if (bolts <= 3) {
+      if (bolts < 3) {
         setTimeout(() => {
           newBolt.remove();
           animateCards();

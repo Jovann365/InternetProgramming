@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID-19Stats</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>COVID-19 Data Dashboard</h1>
+    <div>
+        <button onclick="showAllCountries()">Show all countries</button>
+        <select id="country" onchange="showOneCountry()">
+            <option>Select a country</option>
+        </select>
+    </div>
+
+    <div><img id="flag" src="" onclick="animateFlag()"></div>
+
+    <div id="chart"></div>
+
+<script>
+    var dataCountries = [];
+    fetch("https://disease.sh/v3/covid-19/countries")
+        .then(response => response.json())
+        .then(function (data) {
+            dataCountries = data;
+            addCountries();
+            showAllCountries();
+        })
+
+    function addCountries() {
+        dataCountries.forEach(country => {
+            let newOption = document.createElement("option");
+            newOption.value = country.country;
+            newOption.innerText = country.country;
+            document.getElementById("country").appendChild(newOption);
+        })
+    }
+
+    function showAllCountries() {
+        removeFlag();
+        let countryNames = dataCountries.map(country => country.country);
+        let cases = dataCountries.map(country => country.cases);
+        let recovered = dataCountries.map(country => country.recovered);
+        let deaths = dataCountries.map(country => country.deaths);
+
+        var trace1 = {
+            x: countryNames,
+            y: cases,
+            name: 'Cases',
+            type: 'bar'
+        };
+
+        var trace2 = {
+            x: countryNames,
+            y: recovered,
+            name: 'Recovered',
+            type: 'bar'
+        };
+
+        var trace3 = {
+            x: countryNames,
+            y: deaths,
+            name: 'Deaths',
+            type: 'bar'
+        };
+
+        var data = [trace1, trace2, trace3];
+
+        var layout = {barmode: 'group', title: "COVID-19 Data for all countries"};
+
+        Plotly.newPlot('chart', data, layout);
+    }
+
+    function showOneCountry () {
+        let countryName = document.getElementById("country").value;
+        let countryObj = dataCountries.filter(country => country.country === countryName)
+
+        var data = [
+            {
+                x: ["Cases", "Recovered", "Deaths"],
+                y: [countryObj[0].cases, countryObj[0].recovered, countryObj[0].deaths],
+                type: 'bar'
+            }
+        ];
+
+        var layout = {title: "COVID-19 Data for "+countryName+""}
+
+        Plotly.newPlot('chart', data, layout);
+
+        insertFlag(countryObj[0].countryInfo.flag);
+    }
+
+    function insertFlag(flagURL) {
+        let container = document.getElementById("flag");
+        container.setAttribute("src", flagURL);
+
+        anime ({
+            targets: "#flag",
+            easing: 'easeInOutQuad',
+            opacity: [0, 1],
+            scale: [0.2, 1],
+            duration: 1000
+        })
+    }
+
+    function animateFlag() {
+        console.log("ENTER")
+        let flag = document.getElementById("flag");
+        anime({
+          targets: flag,
+          easing: 'easeInOutQuad',
+          keyframes: [
+              {scale: 0.3, duration: 300},
+              {scale: 1, duration: 300},
+              {borderRadius: '100%', duration: 300},
+              {scale: 0.3, duration: 300},
+              {scale: 1, duration: 300},
+              {borderRadius: 0, duration: 300}
+          ]
+        })
+    }
+
+    function removeFlag() {
+        anime({
+            targets: "#flag",
+            easing: "easeInOutQuad",
+            opacity: [1, 0],
+            scale: [1, 0.2],
+            duration: 1000
+        })
+        setTimeout(() => {
+            document.getElementById("flag").setAttribute("src", "");
+        }, 1050)
+
+    }
+</script>
+
+</body>
+</html>
