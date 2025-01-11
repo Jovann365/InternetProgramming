@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AlienShooter</title>
+  <style>
+    #spaceship {
+      position: absolute;
+    }
+    #alien {
+      position: absolute;
+    }
+    .bullet {
+      width: 50px;
+      height: 3px;
+      background: orange;
+      position: absolute;
+      display: inline-block;
+    }
+    .win {
+        display: inline-block;
+        position: absolute;
+        vertical-align: center;
+        horiz-align: center;
+        font-family: sans-serif;
+        font-size: 50px;
+        font-weight: bolder;
+        color: green;
+        left: 500px;
+    }
+    .lose {
+        display: inline-block;
+        position: absolute;
+        vertical-align: center;
+        horiz-align: center;
+        font-family: sans-serif;
+        font-size: 50px;
+        font-weight: bolder;
+        color: red;
+        left: 500px;
+    }
+  </style>
+</head>
+<body>
+    <div id="buttons">
+      <button onclick="moveDown()">Down</button>
+      <button onclick="moveUp()">Up</button>
+      <button onclick="shoot()">Shoot</button>
+    </div>
+
+    <img id="alien" src="alien.png" alt="" style="width: 90px; height: 100px">
+    <img id="spaceship" src="spaceship.png" alt="" style="width: 160px; height: 60px">
+
+<script>
+    setParameters();
+
+    function setParameters () {
+        // document.getElementsByClassName("message")[0].remove();
+        document.getElementById("alien").style.top = Math.random() * 750 + 30 + "px";
+        document.getElementById("alien").style.left = "900px";
+        document.getElementById("spaceship").style.top = "40px";
+        document.getElementById("spaceship").style.left = "20px";
+    }
+  function moveDown() {
+    let spaceship = document.getElementById("spaceship");
+    console.log(spaceship)
+    let top = parseInt(spaceship.style.top.split("px")[0]);
+    console.log(top);
+    if (top <= 800) {
+      top += 20;
+      spaceship.style.top = top + "px";
+    }
+  }
+
+  function moveUp() {
+    let spaceship = document.getElementById("spaceship");
+    let top = parseInt(spaceship.style.top.split("px")[0]);
+    console.log(top);
+    if (top >= 55) {
+      top -= 20;
+      spaceship.style.top = top + "px";
+    }
+  }
+
+  function shoot() {
+    let bullet = document.createElement("div");
+    bullet.className = "bullet";
+    let spaceshipTop = parseInt(document.getElementById("spaceship").style.top.split("px")[0]);
+    let spaceshipLeft = parseInt(document.getElementById("spaceship").style.left.split("px")[0]);
+    let spaceshipHeight = parseInt(document.getElementById("spaceship").style.height.split("px")[0]);
+    bullet.style.left = spaceshipLeft + 180 + 'px';
+    bullet.style.top = spaceshipTop + spaceshipHeight/2 + 'px';
+    document.body.appendChild(bullet);
+    animateBullet(bullet);
+  }
+
+  function animateBullet(bullet) {
+      let movements = 0;
+      let bulletTop = parseInt(bullet.style.top.split("px")[0]);
+      let alienTop = parseInt(document.getElementById("alien").style.top.split("px")[0]);
+      let alienBottom = alienTop + parseInt(document.getElementById("alien").style.width.split("px")[0]);
+      console.log(alienBottom);
+      let hit = bulletTop >= alienTop && bulletTop <= alienBottom ? 1 : 0;
+      console.log(hit);
+      let interval = setInterval(() => {
+          if (hit === 1) {
+              if (movements * 5 >= 700) {
+                  console.log("stop")
+                  win();
+                  bullet.remove();
+                  clearInterval(interval);
+
+              }
+          } else {
+              if (movements * 5 >= 1000) {
+                  console.log("stop")
+                  lose();
+                  bullet.remove();
+                  clearInterval(interval);
+              }
+          }
+          let left = parseInt(bullet.style.left.split("px")[0]);
+          left += 5;
+          bullet.style.left = left + 'px';
+          movements++;
+      }, 10)
+  }
+
+  function win() {
+      let paragraph = document.createElement("p");
+      paragraph.className = 'win';
+      paragraph.innerText = "YOU WON!";
+      document.body.appendChild(paragraph);
+      setTimeout(() => {
+          paragraph.remove();
+      }, 1000)
+      setTimeout(setParameters, 1050);
+  }
+
+  function lose() {
+      let paragraph = document.createElement("p");
+      paragraph.className = 'lose';
+      paragraph.innerText = "YOU LOSE!";
+      document.body.appendChild(paragraph);
+      setTimeout(() => {
+          paragraph.remove();
+      }, 1000)
+      setTimeout(setParameters, 1050);
+  }
+</script>
+</body>
+</html>
