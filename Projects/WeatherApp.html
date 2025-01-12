@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WeatherApp</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    label {
+      display: inline-block;
+      width: 150px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>Weather App</h1>
+<div id="input">
+  <div><label>Choose a city: </label>
+    <select id="city" onchange="getCityChart()">
+      <option>Select a city</option>
+      <option>London</option>
+      <option>Paris</option>
+      <option>Tokyo</option>
+      <option>New York</option>
+      <option>Sydney</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Select unit: </label>
+    <select id="unit" onchange="getCityChart()">
+      <option>C</option>
+      <option>F</option>
+    </select>
+  </div>
+</div>
+
+<div id="chart"></div>
+<script>
+  var cityLocations = {
+    "London": {lat: 51.5074, lon: -0.1278},
+    "Paris": {lat: 48.8566, lon: 2.3522},
+    "New York": {lat: 40.7128, lon: -74.0060},
+    "Tokyo": {lat: 35.6895, lon: 139.6917},
+    "Sydney": {lat: -33.8688, lon: 151.2093}
+  }
+
+  function getCityChart() {
+    anime({
+      easing: 'linear',
+      targets: "#chart",
+      translateX: [0, 3000],
+      duration: 1000
+    })
+    let dates = [];
+    let maxTemp = [];
+    let minTemp = [];
+
+    let city = document.getElementById("city").value;
+    if (city === "Select a city"){
+      document.getElementById("chart").innerHTML = "";
+      return;
+    }
+
+    let u = document.getElementById("unit").value;
+    let unit;
+    if (u === "C") {
+      unit = "celsius";
+    } else {
+      unit = "fahrenheit"
+    }
+
+    fetch("https://api.open-meteo.com/v1/forecast?latitude="+cityLocations[city].lat+"&longitude="+cityLocations[city].lon+"&daily=temperature_2m_max&temperature_unit="+unit+"")
+            .then(response => response.json())
+            .then(function (data) {
+              dates = data.daily.time;
+              maxTemp = data.daily.temperature_2m_max;
+              console.log(dates)
+              console.log(maxTemp)
+            })
+
+    fetch("https://api.open-meteo.com/v1/forecast?latitude="+cityLocations[city].lat+"&longitude="+cityLocations[city].lon+"&daily=temperature_2m_min&temperature_unit="+unit+"")
+            .then(response => response.json())
+            .then(function (data) {
+              minTemp = data.daily.temperature_2m_min;
+              console.log(minTemp)
+            })
+    setTimeout(() => {
+      var trace1 = {
+        x: dates,
+        y: maxTemp,
+        type: 'scatter'
+      };
+
+      var trace2 = {
+        x: dates,
+        y: minTemp,
+        type: 'scatter'
+      };
+
+      var data = [trace1, trace2];
+
+      Plotly.newPlot('chart', data);
+
+      anime({
+        easing: 'linear',
+        targets: "#chart",
+        translateX: [-3000, 0],
+        duration: 1000
+      })
+    }, 1000)
+
+  }
+
+</script>
+</body>
+</html>
