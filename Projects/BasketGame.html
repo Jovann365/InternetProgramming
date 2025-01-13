@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <style>
+      #gameContainer {
+        width: 800px;
+        height: 600px;
+        border: 1px solid black;
+      }
+      .fruit {
+        position: absolute;
+        border-radius: 100%;
+        border: 1px solid black;
+      }
+      #basket {
+        position: absolute;
+        border: 1px solid black;
+        background: saddlebrown;
+        width: 150px;
+        height: 75px;
+      }
+      body {
+        display: flex;
+        flex-direction: row;
+      }
+      #chart {
+        margin-left: 15px;
+      }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+
+    </div>
+
+    <br>
+
+    <div id="chart">
+
+    </div>
+
+<script>
+  var hit = 0;
+  var miss = 0;
+  var fruits = [];
+  document.addEventListener("keydown", moveBasket);
+  function createBasket() {
+    let basket = document.createElement("div");
+    basket.id = "basket";
+    basket.style.top = 500 + 'px';
+    basket.style.left = 350 + 'px';
+    document.body.appendChild(basket);
+  }
+
+  function getData() {
+    fetch("https://webhook.site/01082ac7-6902-4c3b-a8b2-c9f77201b1c0")
+            .then(response => response.json())
+            .then(function (data) {
+               fruits = data.fruits;
+              startGame();
+            })
+  }
+  getData();
+  createBasket();
+
+  function moveBasket(event) {
+    if (event.key === "ArrowLeft") {
+      let basket = document.getElementById("basket");
+      let left = parseInt(basket.style.left.split("px")[0]);
+      if (left <= 8) {
+        return;
+      }
+      left -= 10;
+      basket.style.left = left + "px";
+    }
+
+    if (event.key === "ArrowRight") {
+      let basket = document.getElementById("basket");
+      let left = parseInt(basket.style.left.split("px")[0]) ;
+      if (left + 150 >= 800) {
+        return;
+      }
+      left += 10;
+      basket.style.left = left + "px";
+    }
+  }
+
+  function startGame() {
+    console.log("START GAME");
+    console.log(fruits.length)
+    for (let i = 0; i < fruits.length; i++) {
+      setTimeout(() => {
+        let fruit = document.createElement("div");
+        fruit.className = "fruit";
+        fruit.style.left = fruits[i].left;
+        fruit.style.top = 12 + "px";
+        fruit.style.backgroundColor = fruits[i].color;
+        fruit.style.width = 30 + "px";
+        fruit.style.height = 30 + "px";
+        console.log(fruit.style.top);
+        document.getElementById("gameContainer").appendChild(fruit);
+        animateFruit(fruit);
+      }, i * 1750);
+    }
+  }
+
+  function animateFruit(fruit){
+    console.log(fruit);
+    let left = parseInt(fruit.style.left.split("px")[0]);
+    let top = parseInt(fruit.style.top.split("px")[0]);
+    console.log(top)
+    let basket = document.getElementById("basket");
+    let bLeft = parseInt(basket.style.left.split("px")[0]);
+
+    if (top + 30 >= 510) {
+        if (left >= bLeft && left <= (bLeft + 150)) {
+          hit++;
+          refreshChart();
+          fruit.remove();
+          return;
+        }
+        if ((left + 30) >= bLeft && (left + 30) <= (bLeft + 150)) {
+          hit++;
+          refreshChart();
+          fruit.remove();
+          return;
+        }
+    }
+    if (top + 30 >= 560) {
+      miss++;
+      refreshChart();
+      fruit.remove();
+      return;
+    }
+    top += 5;
+    fruit.style.top = top + "px";
+    setTimeout(() => {
+    animateFruit(fruit);}, 50)
+  }
+
+  function refreshChart() {
+    var data = [{
+      values: [hit, miss],
+      labels: ['Hits', 'Misses'],
+      type: 'pie'
+    }];
+
+    var layout = {
+      height: 400,
+      width: 500,
+      title: "Score"
+    };
+
+    Plotly.newPlot('chart', data, layout);
+  }
+</script>
+</body>
+</html>

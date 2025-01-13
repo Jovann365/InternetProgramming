@@ -42,9 +42,10 @@
     var animations = 0;
     var numCards = 0;
     var container = document.getElementById("container");
-    fetch("https://webhook.site/27c684fe-0173-4157-868a-efc1dfbff755")
+    fetch("https://webhook.site/f2beef55-f1f7-47ad-8806-9221c8661b82")
             .then(response => response.json())
             .then(function (data) {
+                data = data.colors;
               for (let i = 0; i < data.length; i++) {
                 let newCard = document.createElement("div");
                 newCard.className = "card";
