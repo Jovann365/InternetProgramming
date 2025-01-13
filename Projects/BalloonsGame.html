@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BalloonsGame</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <style>
+      #chart {
+        position: absolute;
+        top: 600px;
+      }
+      .balloon {
+        position: absolute;
+        display: inline-block;
+        width: 70px;
+        height: 70px;
+        border: 1px solid black;
+        border-radius: 100%;
+      }
+    </style>
+</head>
+<body>
+
+<div id="chart">
+
+</div>
+
+<script>
+    let balloons = [];
+
+    fetch("https://webhook.site/5d0688c8-68a9-4fa5-b41a-b429960b6a4d")
+    .then(response => response.json())
+    .then(function (data) {
+      data = data.balloons;
+      for (let i = 0; i < data.length; i++) {
+        let newBalloon = document.createElement("div");
+        newBalloon.className ='balloon';
+        newBalloon.style.left = data[i].left;
+        newBalloon.style.top = data[i].top;
+        newBalloon.style.backgroundColor = data[i].color;
+        newBalloon.setAttribute("onclick", "addPop(this)");
+        newBalloon.id = i;
+        let obj = {};
+          obj.name = "Balloon" + i;
+          obj.pops = 0;
+          obj.popped = false;
+
+        balloons.push(obj);
+        document.body.appendChild(newBalloon);
+      }
+    })
+
+    function addPop(object) {
+      console.log(object);
+      let id = object.id;
+      balloons[id].pops++;
+      if (balloons[id].pops >= 5) {
+        balloons[id].popped = object;
+        anime ({
+          targets: object,
+          scale: 5 * 1.2,
+          duration: 1000,
+          opacity: [1, 0]
+        })
+        object.setAttribute("onclick", "");
+      }
+      else {
+        anime ({
+          targets: object,
+          scale: balloons[id].pops * 1.2,
+          duration: 1000,
+        })
+      }
+      createChart();
+    }
+
+    function createChart() {
+      let notPopped = balloons.filter(b => b.popped === false)
+      let names = notPopped.map(b => b.name);
+      let numPops = notPopped.map(b => b.pops)
+
+      var data = [
+        {
+          x: names,
+          y: numPops,
+          type: 'bar'
+        }
+      ];
+
+      layout = {title: "Pops"}
+
+      Plotly.newPlot('chart', data, layout);
+    }
+
+    createChart();
+</script>
+</body>
+</html>
