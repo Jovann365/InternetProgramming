@@ -1,14 +1,28 @@
 {
-  "name": "$name$",
-  "version": "$version$",
-  "description": "$END$",
-  "main": "$main$",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Jovann365/InternetProgramming.git"
-  },
-  "private": true
+  "fruits": [
+    {
+      "color": "red",
+      "left": "120px"
+    },
+    {
+      "color": "orange",
+      "left": "300px"
+    },
+    {
+      "color": "yellow",
+      "left": "200px"
+    },
+    {
+      "color": "green",
+      "left": "400px"
+    },
+    {
+      "color": "blue",
+      "left": "80px"
+    },
+    {
+      "color": "purple",
+      "left": "500px"
+    }
+  ]
 }
