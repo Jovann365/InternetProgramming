@@ -1,0 +1,19 @@
+{
+  "balloons":
+  [
+    {
+      "left": "200px",
+      "top": "150px",
+      "color": "red"
+    },
+    {
+      "left": "520px",
+      "top": "430px",
+      "color": "magenta"
+    },
+    {
+      "left": "400px",
+      "top": "300px",
+      "color": "cyan" }
+  ]
+}
